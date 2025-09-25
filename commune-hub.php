@@ -2,7 +2,7 @@
 /**
  * Plugin Name:         Commune Hub
  * Description:         A modern, performant community discussion hub (forums + voting + memberships).
- * Version:             1.0.1
+ * Version:             1.0.3
  * Author:              Mohamed Sawah
  * Author URI:          https://sawahsolutions.com
  * Text Domain:         commune-hub
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'COMMUNE_HUB_VERSION', '1.0.1' );
+define( 'COMMUNE_HUB_VERSION', '1.0.3' );
 define( 'COMMUNE_HUB_FILE', __FILE__ );
 define( 'COMMUNE_HUB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'COMMUNE_HUB_URL', plugin_dir_url( __FILE__ ) );

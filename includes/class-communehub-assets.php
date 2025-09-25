@@ -4,13 +4,42 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class CommuneHub_Assets {
 
     public static function init() {
-        add_action( 'wp_enqueue_scripts', [ __CLASS__, 'frontend' ] );
+        add_action( 'wp_enqueue_scripts', [ __CLASS__, 'maybe_enqueue' ] );
+    }
+
+    /**
+     * Decide whether to enqueue on this request.
+     * By default only on pages containing the shortcode [commune_hub].
+     * Use add_filter( 'commune_hub_always_enqueue', '__return_true' ); to force load everywhere.
+     */
+    public static function maybe_enqueue() {
+        $always = apply_filters( 'commune_hub_always_enqueue', false );
+        if ( $always ) {
+            self::frontend();
+            return;
+        }
+
+        // Try to detect shortcode in main queried object.
+        if ( is_singular() ) {
+            global $post;
+            if ( $post && has_shortcode( $post->post_content, 'commune_hub' ) ) {
+                self::frontend();
+            }
+        }
     }
 
     public static function frontend() {
-        wp_register_style( 'commune-hub-frontend', COMMUNE_HUB_URL . 'assets/css/frontend.css', [], COMMUNE_HUB_VERSION );
+
+        // Styles
+        wp_register_style(
+            'commune-hub-frontend',
+            COMMUNE_HUB_URL . 'assets/css/frontend.css',
+            [],
+            COMMUNE_HUB_VERSION
+        );
         wp_enqueue_style( 'commune-hub-frontend' );
 
+        // Script (IIFE build)
         wp_register_script(
             'commune-hub-app',
             COMMUNE_HUB_URL . 'assets/js/app.js',
@@ -19,18 +48,21 @@ class CommuneHub_Assets {
             true
         );
 
-        $options = class_exists('CommuneHub_Admin') ? CommuneHub_Admin::get_options() : [];
-        $default_sort = $options['default_sort'] ?? 'hot';
-        $per_page_default = $options['items_per_page'] ?? 20;
+        $options = [];
+        if ( class_exists( 'CommuneHub_Admin' ) ) {
+            $options = CommuneHub_Admin::get_options();
+        }
 
-        $params = [
-            'community' => intval( $request->get_param( 'community' ) ),
-            'sort'      => $request->get_param( 'sort' ) ? commune_hub_sanitize_text( $request->get_param( 'sort' ) ) : $default_sort,
-            'paged'     => max(1, intval( $request->get_param( 'page' ) )),
-            'per_page'  => min(50, max(1, intval( $request->get_param( 'per_page' ) ?: $per_page_default ) ) ),
-            'search'    => commune_hub_sanitize_text( $request->get_param( 'search' ) ),
-            'tag'       => commune_hub_sanitize_text( $request->get_param( 'tag' ) ),
-        ];
+        // Provide basic context to front end
+        wp_localize_script( 'commune-hub-app', 'communeHub', [
+            'root'          => esc_url_raw( rest_url( CommuneHub_REST::NS ) ),
+            'nonce'         => wp_create_nonce( 'wp_rest' ),
+            'currentUserId' => get_current_user_id(),
+            'options'       => $options,
+            'i18n'          => [
+                'createPost' => __( 'Create Post', 'commune-hub' ),
+            ]
+        ] );
 
         wp_enqueue_script( 'commune-hub-app' );
     }
