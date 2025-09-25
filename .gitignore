@@ -1,0 +1,14 @@
+# Node dependencies
+node_modules/
+
+# (Optional) If you have nested packages (monorepo style):
+**/node_modules/
+
+# Other useful ignores (optional)
+dist/
+build/
+.cache/
+.vite/
+.DS_Store
+.env
+.env.local

@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Commune Hub 1.0.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+
+#: includes/class-communehub-rest.php
+msgid "Name required"
+msgstr ""
