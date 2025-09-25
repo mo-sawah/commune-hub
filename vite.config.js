@@ -2,18 +2,22 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   build: {
+    lib: {
+      entry: "src/index.js",
+      name: "CommuneHubApp",
+      fileName: () => "app.js",
+      formats: ["iife"],
+    },
     outDir: "assets/js",
     emptyOutDir: false,
+    cssCodeSplit: false,
     rollupOptions: {
-      input: "src/index.js",
+      external: ["@wordpress/element"],
       output: {
-        entryFileNames: "app.js",
-        assetFileNames: "[name].[ext]",
         globals: {
           "@wordpress/element": "wp.element",
         },
       },
-      external: ["@wordpress/element"],
     },
   },
 });

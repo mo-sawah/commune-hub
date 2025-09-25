@@ -10,6 +10,13 @@ class CommuneHub_Loader {
         CommuneHub_Query::init();
         CommuneHub_REST::init();
         CommuneHub_Assets::init();
+
+        // New admin settings page
+        if ( is_admin() ) {
+            require_once COMMUNE_HUB_DIR . 'includes/class-communehub-admin.php';
+            CommuneHub_Admin::init();
+        }
+
         CommuneHub_Shortcodes::init();
     }
 }

@@ -3,12 +3,10 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
-  "description": "Commune Hub – WordPress community plugin front-end build",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/postbuild.js",
-    "//build:plain": "vite build",
-    "analyze": "vite build --mode analyze"
+    "release:patch": "npm run build && npm version patch -m \"chore(release): %s\" && git push --follow-tags"
   },
   "devDependencies": {
     "@wordpress/element": "^6.3.0",
